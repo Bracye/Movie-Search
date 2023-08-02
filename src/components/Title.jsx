@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const TitleContainer = styled.h1`
   font-size: 2.5em;
-  color: #0071eb;
+  color: #f0f0f0;
   margin-bottom: 20px;
 `;
 

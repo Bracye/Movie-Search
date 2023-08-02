@@ -8,7 +8,8 @@ const FormContainer = styled.form`
 
   input[type="text"] {
     padding: 10px;
-    font-size: 1em;
+    font-size: 1.2em; /* Increase the font size for better visibility */
+    line-height: 1.5; /* Increase line height to add spacing between lines */
     border: 2px solid #0071eb;
     border-radius: 5px;
     margin-right: 10px;
@@ -26,7 +27,7 @@ const FormContainer = styled.form`
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    font-size: 1em;
+    font-size: 1.2em; /* Increase the font size for better visibility */
     cursor: pointer;
     outline: none;
   }

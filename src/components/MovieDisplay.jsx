@@ -1,105 +1,129 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
+import { useSpring, animated } from 'react-spring';
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const DisplayContainer = styled.div`
-  text-align: center;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  animation: ${fadeIn} 0.5s ease;
-
-  h1 {
-    font-size: 2.5em;
-    color: #0071eb;
-    margin-bottom: 10px;
-  }
-
-  h2 {
-    font-size: 1.2em;
-    color: #333;
-    margin-bottom: 5px;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-
-    :hover {
-      transform: scale(1.05);
-    }
-  }
-`;
-
-const Placeholder = styled.div`
-  text-align: center;
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  animation: ${fadeIn} 0.5s ease;
-
-  h1 {
-    font-size: 2em;
-    color: #999;
-    margin-bottom: 10px;
-  }
-`;
-
-const ActorList = styled.div`
-  margin-top: 15px;
+const DisplayContainer = styled(animated.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  background-color: #121212;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: #f0f0f0; /* Greyish white text color */
+`;
 
-  h2 {
-    font-size: 1.5em;
-    margin-bottom: 5px;
-  }
+const MovieInfoContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  max-width: 800px;
+`;
 
-  ul {
-    list-style-type: disc;
-    padding-left: 20px;
-    margin: 0;
-  }
+const MoviePoster = styled.img`
+  border-radius: 10px;
+  max-width: 300px; /* Limit the maximum width of the poster */
+  flex: 1;
+  margin-right: 20px;
+`;
 
-  li {
-    font-size: 1.1em;
-    margin-bottom: 5px;
-  }
+
+const ActorList = styled.ul`
+  list-style-type: disc;
+  padding-top: 20px
+  padding-left: 20px;
+  margin: 0;
+`;
+
+const RatingList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+`;
+
+const RatingItem = styled.li`
+  margin-bottom: 5px;
+`;
+
+const Separator = styled.hr`
+  width: 100%;
+  margin: 10px 0;
+  border: 1px solid #666;
+`;
+
+const Sidebar = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
+const Label = styled.span`
+  width: 120px;
+  text-align: right;
+  margin-right: 10px;
 `;
 
 function MovieDisplay({ movie }) {
+  const fadeInProps = useSpring({ opacity: 1, from: { opacity: 0 } });
+
   const loaded = () => {
     return (
-      <DisplayContainer>
+      <DisplayContainer style={fadeInProps}>
+        <Separator />
         <h1>{movie.Title}</h1>
-        <h2>{movie.Genre}</h2>
-        <img src={movie.Poster} alt={movie.Title} />
-        <h2>{movie.Year}</h2>
-        {movie.Actors && (
-          <ActorList>
-            <h2>Actors:</h2>
-            <ul>
-              {movie.Actors.split(',').map((actor) => (
-                <li key={actor.trim()}>{actor.trim()}</li>
-              ))}
-            </ul>
-          </ActorList>
+        <MovieInfoContainer>
+          <Sidebar>
+            <div>
+              <Label>Genre:</Label>
+              {movie.Genre}
+            </div>
+            <div>
+              <Label>Year Released:</Label>
+              {movie.Year}
+            </div>
+            {movie.Actors && (
+              <div>
+                <Label>Cast:</Label>
+                <ActorList>
+                  {movie.Actors.split(',').map((actor) => (
+                    <li key={actor.trim()}>{actor.trim()}</li>
+                  ))}
+                </ActorList>
+              </div>
+            )}
+          </Sidebar>
+          <MoviePoster src={movie.Poster} alt={movie.Title} />
+          <Sidebar>
+            <div>
+              <Label>Ratings:</Label>
+              <RatingList>
+                {movie.Ratings.map((rating, index) => (
+                  <RatingItem key={index}>{`${rating.Source}: ${rating.Value}`}</RatingItem>
+                ))}
+              </RatingList>
+            </div>
+            {movie.Awards && (
+              <div>
+                <Label>Awards:</Label>
+                <p>{movie.Awards}</p>
+              </div>
+            )}
+            {movie.BoxOffice && (
+              <div>
+                <Label>Box Office:</Label>
+                <p>{movie.BoxOffice}</p>
+              </div>
+            )}
+          </Sidebar>
+        </MovieInfoContainer>
+        {movie.Plot && (
+          <div>
+            <Separator />
+            <h1>Story Line: </h1>
+            <p>{movie.Plot}</p>
+          </div>
         )}
       </DisplayContainer>
     );
@@ -107,9 +131,9 @@ function MovieDisplay({ movie }) {
 
   const loading = () => {
     return (
-      <Placeholder>
+      <DisplayContainer style={fadeInProps}>
         <h1>Loading...</h1>
-      </Placeholder>
+      </DisplayContainer>
     );
   };
 
